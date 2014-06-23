@@ -82,7 +82,7 @@ class Product_Suggest
 		@nouns_phrases = nouns_phrases
 	end
 
-	def find_relevant_products
+	def find_relevant_products(nouns_phrases)
 		req = Vacuum.new
 		#AKIAIJZEOBD4H4XGT3JA
 		# should i put in initialize
@@ -98,9 +98,9 @@ class Product_Suggest
 				product_name = y["ItemLookupResponse"]["Items"]["Item"]["ItemAttributes"]["Title"]
 				product_link = ["http://www.amazon.com/dp/",product_asin].join
 				hash_products << {"Link" => product_link, "Product" => product_name}
-				
+
 			end
-			binding.pry
+			#binding.pry
 
 			
 
@@ -126,7 +126,7 @@ require 'pry'
 #puts "go to https://developers.facebook.com/tools/explorer?method=GET&path=me%3Ffields%3Did%2Cname and obtain your access token"
 #puts "Copy and Paste Token below"
 #access_token = gets.chomp
-access_token = 'CAACEdEose0cBAK01ZABsJZAu88imxAEncadobfqJTQEUGbJAdZAnZAAvQx0MmGRJmZBnNtgKIuCUWmDwjUrtz7978SJdZBwkPl8se0HYRBZBp8aTUvhCuRbA4wW8GZBOeaLkEhRwRZAymOZCx3qZAKY9nJFxviIeaFn7FBUkFThiZB1UwgJvbRpR7SX5gdBmR4gmbPCVZALY1fhq8GwZDZD'	
+access_token = 'CAACEdEose0cBAEen3ogfwnQafMtZBNgMdKZCFo271qlvkmufZCgrYh8RL1hPO0FpUY8tuVZCFSSCNPDztRGWMCgrkhAhRDt2wJVreVYvcDqcAtbIiuxRImqFIjYRUyhbGvGmsriz8r3PZABefgtZBINahn8ZCi8gckFmVM1Ug8TfPatLgebOfVVKQQEf2QpXm0gV7bUeNKW6AZDZD'	
 #oauth = Koala::Facebook::OAuth.new("629003873819689", "91e4ff8447aef962c4ced9d3c1eb285e", nil)
 # access_token = oauth.get_app_access_token
 graph = Koala::Facebook::API.new(access_token)
@@ -150,8 +150,8 @@ jenny_profile = User_Duediligence.new(likes,stories,messages)
 
 puts jenny_profile.get_user_nouns_phrases
 
-#jenny_product_suggest = Product_Suggest.new(jenny_profile.get_user_nouns_phrases)
-#puts jenny_product_suggest.find_relevant_products
+jenny_product_suggest = Product_Suggest.new(jenny_profile.get_user_nouns_phrases)
+puts jenny_product_suggest.find_relevant_products
 
 
 

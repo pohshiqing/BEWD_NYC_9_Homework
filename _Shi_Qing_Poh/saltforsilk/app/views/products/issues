@@ -1,0 +1,19 @@
+issues
+
+#when existing user sign in, it did not redirect to his userpage but goes to a different userid path
+
+#when new users sign up, it redirects to localhost3000
+
+#matched products disappear when i click like or unlike
+
+need to show successful matches
+
+upload to web
+
+
+<% if current_user.likes.select { |like| like.product_id == product.id && like.userproduct_id == params[:id].to_i}.present? %>
+                        <p><%= button_to 'Unlike', unlikes_path(product_id: product.id, redirect_id: params[:id], :match_index => params[:match_index]) %></p>
+                    <% else %>
+                        <p><%= button_to 'Like', likes_path(product_id: product.id, redirect_id: params[:id], :match_index => params[:match_index]) %></p>
+
+                    <% end %>

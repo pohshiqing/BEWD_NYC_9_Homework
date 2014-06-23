@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @product.title %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @product.description %>
+</p>
+
+<p>
+  <strong>Value Low:</strong>
+  <%= @product.value_low%>
+</p>
+
+<p>
+  <strong>Value High:</strong>
+  <%= @product.value_high %>
+</p>
+
+<p>
+  <strong>Image:</strong><br>
+  <%= image_tag @product.image.url(:thumb) %>
+</p>
+<% if Product.find_by(id: @product.id).user == current_user %>
+
+<%= button_to 'Destroy', product_path(@product), method: :delete %>
+<%else %>
+<p><strong>Owner Email:</strong> <%= Product.find_by(id: @product.id).user.email %></p><br>
+<%= link_to 'Contact Owner', new_message_path(current_user.id, product_id: @product.id) %><br>
+<%end%>
+<%= link_to 'Back', user_path(@user.id) %>

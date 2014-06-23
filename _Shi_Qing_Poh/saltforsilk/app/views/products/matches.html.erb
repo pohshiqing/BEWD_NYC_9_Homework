@@ -1,0 +1,129 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="EN" lang="EN" dir="ltr">
+<head profile="http://gmpg.org/xfn/11">
+<title>Salt for Silk</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="imagetoolbar" content="no" />
+<link rel="stylesheet" href="styles/layout.css" type="text/css" />
+</head>
+
+<body id="top">
+<div class="wrapper">
+  <div id="header">
+    <div id="logo">
+      <table>
+      <td><img><%= image_tag "logo_v2.png" , width: 60, height: 60 %></img> </td>
+      <td>
+      <h1><a href="#">Salt for Silk</a></h1>
+      <p>a bartering website.</p>
+      </td>
+    </table>
+    </div>
+    <div id="topnav">
+      <ul>
+        <%= link_to 'Messages', message_path(current_user.id) %> |
+        <%= link_to 'Upload Avatar', new_user_path %> |
+        <% if user_signed_in? %>        
+        <%= link_to 'Profile', user_path(current_user.id) %> |
+        <%= link_to 'Sign out', destroy_user_session_path, :method=>'delete' %> |
+        <% else %>
+        <%= link_to 'Sign in', new_user_session_path %> |
+        <%= link_to 'Sign up', new_user_registration_path %> |
+        <% end %>
+        
+      </ul>
+    </div>
+    <br class="clear" />
+  </div>
+</div>
+
+
+<div class="wrapper">
+    <div id="matches">
+        <div class="fl_center">
+            <h2>Matches</h2>
+            <table>
+            <tbody>
+                <td>
+                    <div id="column_match">
+                    <div class="holder2">
+                        
+                        <img><%= image_tag @product.image.url() , width: 250, height: 250 %></img>  
+                        <b><%= @product.title %></b>    
+                    </div>
+                    </div>      
+                </td>    
+
+                <td>       
+                    <div id="column_match">
+                    <div class="holder">
+                        <img><%= image_tag "arrow.png" , width: 250, height: 250 %></img>   
+                    </div>
+                    </div>
+                </td>
+
+                <td>
+                    <div id="column_match">
+                    <div class="holder1">
+                            <% if @matched_products_updated[params[:match_index].to_i].present? %>
+
+                                <% product = @matched_products_updated[params[:match_index].to_i]  %>  
+                                <% value_vector = [@product.value_low, @product.value_high, product.value_low, product.value_high] %>
+                                <% value_vector = value_vector.map{|value| value.to_i}.sort %>
+                                <% overlap = value_vector[2] - value_vector[1] %>
+                                <% percent_match = 50*overlap/(@product.value_high.to_i-@product.value_low.to_i) + 50*overlap/(product.value_high.to_i-@product.value_low.to_i) %>
+                               
+                                
+                                
+
+                                    
+                                    <img><%= image_tag product.image.url() , width: 250, height: 250 %></img>
+                                    <b><%= product.title %> (<%= percent_match %>% Match)</b><br>
+                                    
+                                    <p>Owner: <%= product.user.username %> (<%= product.user.email %>)</p>
+                                    <% if product.user.geocoded? %>
+                                        <p>Distance from You: <%= current_user.distance_to(product.user, :mi) %> miles</p><br>
+                                    <% else %>
+                                        <p>Distance from You: Unknown </p>
+                                    <% end %>
+                                   
+                                    <% match_index_next = params[:match_index].to_i + 1 %>
+                               
+                                
+                            <% else %>
+                                No More Matches
+                                <% match_index_next = params[:match_index].to_i %>
+                            <% end %>    
+
+                    </div>
+                    </div>
+
+                    
+                </td>
+                <td>
+                    <% if @matched_products_updated[params[:match_index].to_i].present? %>
+                        <% if current_user.likes.select { |like| like.product_id == product.id && like.userproduct_id == params[:id].to_i}.present? %>
+                            <p><%= button_to 'Like', redirects_path(product_id: product.id, redirect_id: params[:id], :match_index => params[:match_index]) %></p>
+                            <p><%= button_to 'Unlike', unlikes_path(product_id: product.id, redirect_id: params[:id], :match_index => params[:match_index]) %></p>                      
+                               
+                        <% else %>
+                            <p><%= button_to 'Like', likes_path(product_id: product.id, redirect_id: params[:id], :match_index => params[:match_index]) %></p>   
+                            <p><%= button_to 'Unlike', redirects_path(product_id: product.id, redirect_id: params[:id], :match_index => params[:match_index]) %></p>
+                             
+                        <% end %>
+                    <% else %>
+                        <%= link_to 'Back', user_path(current_user.id) %> 
+                     <% end %>  
+
+                </td>   
+            </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+
+  
+ <%= form_for(@message) do |f| %>
+
+
+  <% if @message.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@message.errors.count, "error") %> prohibited this product from being saved:</h2>
+
+      <ul>
+      <% @message.errors.full_messages.each do |message_x| %>
+        <li><%= message_x %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+ 
+
+    <%= f.hidden_field :sender, :value=> @user.id %>
+    <%= f.hidden_field :receiver, :value=> @message_receiver_id %>
+
+
+  <div class="field">
+    From: <%= @user.username %><br><br>
+    To: <%= @receiver_product.user.username %><br><br>
+    Message: <br>
+    <%= f.text_field :content %>
+  </div>
+  <br>
+  <div class="actions">
+    <%= f.submit 'Send' %>
+  </div>
+<% end %>

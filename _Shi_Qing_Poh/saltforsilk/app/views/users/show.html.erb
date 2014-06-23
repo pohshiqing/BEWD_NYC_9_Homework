@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="EN" lang="EN" dir="ltr">
+<head profile="http://gmpg.org/xfn/11">
+<title>Salt for Silk</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="imagetoolbar" content="no" />
+<link rel="stylesheet" href="styles/layout.css" type="text/css" />
+</head>
+
+<body id="top">
+<div class="wrapper">
+  <div id="header">
+    <div id="logo">
+      <table>
+      <td><img><%= image_tag "logo_v2.png" , width: 60, height: 60 %></img> </td>
+      <td>
+      <h1><a href="#">Salt for Silk</a></h1>
+      <p>a bartering website.</p>
+  	  </td>
+  	</table>
+    </div>
+    <div id="topnav">
+      <ul>
+      	<%= link_to 'Messages', message_path(current_user.id) %> |
+      	<%= link_to 'Upload Avatar', new_user_path %> |
+        <% if user_signed_in? %>		
+  		<%= link_to 'Profile', user_path(current_user.id) %> |
+  		<%= link_to 'Sign out', destroy_user_session_path, :method=>'delete' %> |
+		<% else %>
+  		<%= link_to 'Sign in', new_user_session_path %> |
+  		<%= link_to 'Sign up', new_user_registration_path %> |
+		<% end %>
+		
+      </ul>
+    </div>
+    <br class="clear" />
+  </div>
+</div>
+<div class="wrapper">
+  <div id="latest">
+    <div class="fl_left"><a href="#"><img><%= image_tag @user.avatar.url(), width: 220, height: 300 %></img></a></div>
+
+
+    <div class="fl_right">
+      <h2><%= @user.username %> (<%= @user[:IPAddress] %>)</h2><br><br><br>
+      <p>1. <u><%= link_to 'Post your stuff here.', new_product_path %></u></p><br><br>
+
+      <ul>
+      
+
+      	<% @products_selected.each do |product| %>
+      	<div id="column">
+		<div class="holder">
+        <a href="#"><img><%= image_tag product.image.url() , width: 150, height: 150%></img></a>
+    	
+    	<pp><%= link_to product.title, product_path(product.id) %> </pp><br><br>
+
+    	<pp>2. <u><%= link_to 'Find Matches', products_matches_path(product.id, :match_index => 0), method: :get %></u></pp>
+    	
+
+   		</div>   
+   		</div>
+    	<% end %>
+
+    
+        
+        
+      </ul>
+    </div>
+    <br class="clear" />
+  </div>
+</div>
+
+
+<div class="wrapper">
+	<div id="matches">
+		<div class="fl_left">
+			<h2>Successful Matches</h2>
+			<% @products_selected.each do |product| %>
+			<table>
+			<tbody>
+	
+		       	<% if product.matches.first.present? %>    
+			       	<% @c = 0 %>
+			       	<%product.matches.each do |test| %>
+			       	
+			       	<%if test.likes.where(:userproduct_id => product.id).first.present? %>
+			       	 	<% @c = @c+1%>
+			   
+			       	<% else %>
+			       	<% end %>
+			       	<% end %>
+
+			       	<%if @c>0 %>
+			       		<td>
+			       		<div id="column">
+						<div class="holder">
+			       		<p>3. <u>Swap your</u></p>
+						<p><%= product.title %></p>
+			       	 	<a href="#"><img><%= image_tag product.image.url()  , width: 150, height: 150%></img></a><br>
+			       	 	</div>
+			       	 	</div>
+			       		</td>	
+
+						
+
+
+
+			        	<td>
+			        
+						 <p>for </p>
+					
+						</td>
+			        <%else%>
+				    <%end%>	
+			    	<% @x = 0 %>
+		       		<% product.matches.each do |product_sub| %>  	
+			    		
+			    		<% if product_sub.likes.where(:userproduct_id => product.id).first.present? %>    	
+			    			<% @x = @x + 1 %>
+							<% if @x > 1 %>	
+								<td><strong> or </strong></td>
+							<% else %>				
+			    			<% end %>
+
+			    		<td>
+			       		<div id="column">
+						<div class="holder">
+			       		<p><%= product_sub.likes.where(:userproduct_id => product.id).first.product.user.username %>'s</p>
+						<p><%= link_to product_sub.likes.where(:userproduct_id => product.id).first.product.title, product_path(product_sub.likes.where(:userproduct_id => product.id).first.product.id)%></p>
+			       	 	<a href="#"><img><%= image_tag product_sub.likes.where(:userproduct_id => product.id).first.product.image.url() , width: 150, height: 150 %></img></a><br>
+			       	 	</div>
+			       	 	</div>
+			       		
+
+
+
+			    		
+			    		<% else %>				
+			    		<% end %>
+
+			    		</td>
+			    	<% end %> 	 
+
+			
+		    	<% else %>
+		    		
+		    		
+		        <% end %>
+
+		    </tbody>
+		    </table>
+		    <% end %>
+
+
+		</div>
+		<div class="fl_right">
+			<h2>Look Around</h2>
+			
+			<% product_pop = (1..Product.count).to_a %>
+			<% product_sample = product_pop.sample(4) %>
+			<% product_sample.each do |sample_index| %>
+			<% sample = Product.all[sample_index-1] %>
+			
+			<a href="#"><img><%= image_tag sample.image.url(), width: 150, height: 150%></img></a>
+			<%end%>
+	
+		</div>
+  
+    </div>
+</div>
+
+
+
+
+
+
+</body>
+</html>
